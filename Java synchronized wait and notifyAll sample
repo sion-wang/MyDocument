@@ -1,0 +1,66 @@
+Java synchronized wait and notifyAll sample
+
+class Main {
+  public static void main(String []args){
+        System.out.println("Hello World");
+        try {
+            new Thread(new Runnable(){
+              @Override
+              public void run() {
+              
+                QRUrl.run();
+              }
+            }).start();
+
+            new Thread(new Runnable(){
+              @Override
+              public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch(InterruptedException e) {
+                   e.printStackTrace();
+                }
+                synchronized (QRUrl.Lock.class) {
+                    QRUrl.Lock.class.notifyAll();
+                }
+              }
+            }).start();
+            
+            Thread.sleep(1000);
+            QRUrl.run();
+
+
+            Thread.sleep(3000);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+     }
+     
+     
+static class QRUrl {
+    public static synchronized void  run() {
+        System.out.println("run");
+        // try{
+
+        //     Thread.sleep(5000);
+        // } catch(InterruptedException e) {
+        //     e.printStackTrace();
+        // }
+        synchronized (QRUrl.Lock.class) {
+            try {
+            QRUrl.Lock.class.wait(10000);
+            } catch(InterruptedException e) {
+                
+            e.printStackTrace();
+            
+        }
+        
+        }
+
+      System.out.println("run after wait");
+    }
+
+public static class Lock {}
+}
+
+}
